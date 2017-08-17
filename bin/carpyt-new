@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+
+"""A module creation tool for Python."""
+
+import carpyt
+
+
+def main():
+    """Runs carpyt-new, creating a new module."""
+    return
+
+
+if __name__ == 'main':
+    main()

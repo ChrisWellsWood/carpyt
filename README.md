@@ -19,6 +19,16 @@ Making modules in Python is harder than it should be, so let's make it easier by
 
 With these amazing features, why wouldn't you use **carpyt**!?
 
+## Getting Started
+
+It's easy to install **carpyt**:
+
+```pip install carpyt```
+
+And then you can make a new module like this:
+
+```carpyt new --bin super_great_cmdline_tool```
+
 ## FAQs
 
 No one's ever asked me _any_ questions about this project, but that's not going to stop me having an FAQ section!
@@ -35,6 +45,10 @@ It could be pronounced carpet, which is great because there's a snake called a c
 
 YES! Just come along and do stuff. Make suggestions, complain, chat about the weather or even submit pull requests. I'll try and have some "need help" issue open at all times, come and snag one of those if you like.
 
+### Why don't the commands you've listed in the getting started section actually work?
+
+The do work, saw them running in my head movies.
+
 ### I'm not sure about this project, it seems a bit rubbish...
 
-That's not a question. Obviously you know nothing as there are badges in this README, and when was the last time you saw a rubbish project on GitHub that had tonnes of badges? Never, that's when. 
+That's not a question. Obviously you know nothing, have you not noticed the badges in this README? When was the last time you saw a rubbish project on GitHub that had tonnes of badges? Never, that's when. 

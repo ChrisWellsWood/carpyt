@@ -14,6 +14,7 @@ Making modules in Python is harder than it should be, so let's make it easier by
 * Automatic `setup.py` creation
 * A choice of module style (bin or lib)
 * Unit tests from day 0
+* Easily create docs!
 * Git integration (to initialise a repo and scrape your deets!)
 * Easy publishing to PyPI
 

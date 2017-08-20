@@ -11,13 +11,13 @@ class TestFileCreation(TestCase):
     """Tests that all required files are generated correctly."""
 
     def test_lib_creation(self):
-        """Makes sure that the base directory structure is created."""
+        """Makes sure that the base lib directory structure is created."""
         with tempfile.TemporaryDirectory() as test_dir:
             test_dir_path = Path(test_dir)
             project_name = 'lovely_project'
             make_file_structure(project_name, test_dir_path)
             project = test_dir_path / project_name
-            module = project / project_name
+            module = project / project.name
             docs = project / 'docs'
             tests = project / 'tests'
             for directory in [project, module, tests, docs]:
@@ -26,7 +26,7 @@ class TestFileCreation(TestCase):
             self.assertFalse(bin_d.exists())
 
     def test_bin_creation(self):
-        """Makes sure that the base directory structure is created."""
+        """Makes sure that the base bin directory structure is created."""
         with tempfile.TemporaryDirectory() as test_dir:
             test_dir_path = Path(test_dir)
             project_name = 'lovely_project'

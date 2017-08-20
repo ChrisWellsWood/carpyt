@@ -16,13 +16,21 @@ def make_file_structure(
     bin_project : bool
         If True, a binary folder will be created.
     """
-    project = parent / project_name
-    module = project / project_name
-    docs = project / 'docs'
-    tests = project / 'tests'
-    for directory in [project, module, docs, tests]:
+    project_dir = parent / project_name
+    project_dir.mkdir()
+    module = make_module(project_dir)
+    docs = project_dir / 'docs'
+    tests = project_dir / 'tests'
+    for directory in [docs, tests]:
         directory.mkdir()
     if bin_project:
-        bin_d = project / 'bin'
+        bin_d = project_dir / 'bin'
         bin_d.mkdir()
     return
+
+
+def make_module(project_dir: Path) -> Path:
+    """Makes the module folder and assoicated files."""
+    module = project_dir / project_dir.name
+    module.mkdir()
+    return module

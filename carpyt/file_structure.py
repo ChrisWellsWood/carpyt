@@ -31,16 +31,38 @@ def make_file_structure(
     return
 
 
-def create_from_template(directory: Path, template_item: (str, str),
+def create_from_template(directory: Path, template_item: (str, dict),
                          required_fields: dict=None):
-    """Creates a file from a template item."""
+    """Creates a file from a template item.
+
+    Parameters
+    ----------
+    directory : Path
+        Directory file will be created inside.
+    template_item : (str, dict)
+        Name of file and template contents.
+    required_fields : dict or None, optional
+        Fields required for content.
+    """
     file_name, file_info = template_item
     (directory / file_name).touch()
     return
 
 
-def make_project_dir(parent_dir: Path, project_name: str) -> Path:
-    """Makes the module folder and associated files."""
+def make_project_dir(project_name: str, parent_dir: Path) -> Path:
+    """Makes the module folder and associated files.
+    Parameters
+    ----------
+    project_name : str
+        User supplied name for the project.
+    parent_dir : pathlib.Path
+        A path to the folder where the project will be created.
+
+    Returns
+    -------
+    project_dir : pathlib.Path
+        Path to the project folder.
+    """
     project_dir = parent_dir / project_name
     project_dir.mkdir()
     with open(str(TEMPLATES / 'project.yml'), 'r') as inf:

@@ -36,6 +36,8 @@ def make_module_dir(project_dir: Path) -> Path:
     """Makes the module folder and associated files."""
     module_dir = project_dir / project_dir.name
     module_dir.mkdir()
+    init_path = module_dir / '__init__.py'
+    init_path.touch()
     return module_dir
 
 

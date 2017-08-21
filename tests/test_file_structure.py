@@ -4,6 +4,8 @@ from pathlib import Path
 from unittest import TestCase
 import tempfile
 
+import yaml
+
 import carpyt
 from carpyt import file_structure
 
@@ -12,7 +14,7 @@ class TestFileCreation(TestCase):
     """Tests that all required files are generated correctly."""
 
     def test_lib_creation(self):
-        """Makes sure that the base lib directory structure is created."""
+        """Verifies the base lib directory structure is created."""
         with tempfile.TemporaryDirectory() as test_dir:
             test_dir_path = Path(test_dir)
             project_name = 'lovely_project'
@@ -27,7 +29,7 @@ class TestFileCreation(TestCase):
             self.assertFalse(bin_d.exists())
 
     def test_bin_creation(self):
-        """Makes sure that the base bin directory structure is created."""
+        """Verfies the base bin directory structure is created."""
         with tempfile.TemporaryDirectory() as test_dir:
             test_dir_path = Path(test_dir)
             project_name = 'lovely_project'
@@ -41,10 +43,21 @@ class TestFileCreation(TestCase):
             for directory in [project, module, tests, docs, bin_d]:
                 self.assertTrue(directory.exists())
 
+    def test_make_project_dir(self):
+        """Tests the structure of the module dir."""
+        with tempfile.TemporaryDirectory() as test_dir:
+            test_dir_path = Path(test_dir)
+            project_dir = file_structure.make_project_dir(test_dir_path,
+                                                          'lovely_project')
+            with open(str(file_structure.TEMPLATES / 'project.yml'),
+                      'r') as inf:
+                project_template = yaml.load(inf)
+            for file_name in project_template.keys():
+                self.assertTrue((project_dir / file_name).exists())
+
     def test_make_module_dir(self):
         """Tests the structure of the module dir."""
         with tempfile.TemporaryDirectory() as test_dir:
             test_dir_path = Path(test_dir)
             module_dir = file_structure.make_module_dir(test_dir_path)
-            init_file = module_dir / '__init__.py'
-            self.assertTrue(init_file.exists())
+            self.assertTrue((module_dir / '__init__.py').exists())

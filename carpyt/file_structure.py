@@ -1,6 +1,12 @@
 """Creates the file structure for the project."""
 
+import os
 from pathlib import Path
+
+import yaml
+
+
+TEMPLATES = Path(os.path.abspath(__file__)).parent / 'templates'
 
 
 def make_file_structure(
@@ -25,10 +31,22 @@ def make_file_structure(
     return
 
 
+def create_from_template(directory: Path, template_item: (str, str),
+                         required_fields: dict=None):
+    """Creates a file from a template item."""
+    file_name, file_info = template_item
+    (directory / file_name).touch()
+    return
+
+
 def make_project_dir(parent_dir: Path, project_name: str) -> Path:
     """Makes the module folder and associated files."""
     project_dir = parent_dir / project_name
     project_dir.mkdir()
+    with open(str(TEMPLATES / 'project.yml'), 'r') as inf:
+        project_template = yaml.load(inf)
+    for template_item in project_template.items():
+        create_from_template(project_dir, template_item)
     return project_dir
 
 

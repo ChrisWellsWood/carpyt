@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest import TestCase
 import tempfile
 
+import carpyt
 from carpyt import file_structure
 
 
@@ -15,7 +16,7 @@ class TestFileCreation(TestCase):
         with tempfile.TemporaryDirectory() as test_dir:
             test_dir_path = Path(test_dir)
             project_name = 'lovely_project'
-            file_structure.make_file_structure(project_name, test_dir_path)
+            carpyt.make_file_structure(project_name, test_dir_path)
             project = test_dir_path / project_name
             module = project / project.name
             docs = project / 'docs'
@@ -30,7 +31,7 @@ class TestFileCreation(TestCase):
         with tempfile.TemporaryDirectory() as test_dir:
             test_dir_path = Path(test_dir)
             project_name = 'lovely_project'
-            file_structure.make_file_structure(
+            carpyt.make_file_structure(
                 project_name, test_dir_path, bin_project=True)
             project = test_dir_path / project_name
             module = project / project_name

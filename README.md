@@ -48,7 +48,7 @@ YES! Just come along and do stuff. Make suggestions, complain, chat about the we
 
 ### Why don't the commands you've listed in the getting started section actually work?
 
-The do work, saw them running in my head movies.
+They do work, I saw them running in my head movies.
 
 ### I'm not sure about this project, it seems a bit rubbish...
 

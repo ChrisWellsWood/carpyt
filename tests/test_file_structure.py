@@ -1,63 +1,34 @@
 """Tests for creating file structure."""
 
+import os
 from pathlib import Path
 from unittest import TestCase
-import tempfile
 
-import yaml
+from carpyt import parse_template
 
-import carpyt
-from carpyt import file_structure
+
+TEST_TEMPLATES = Path(os.path.abspath(__file__)).parent / 'test_templates'
+
+
+class TestTemplateParsing(TestCase):
+    """Tests that templates are parsed correctly."""
+
+    def test_std_template(self):
+        """Tests the creation of a simple parse tree."""
+        template_path = TEST_TEMPLATES / 'simple.yml'
+        file_tree = parse_template(template_path)
+        for exp_file in ['setup.py', 'requirements.txt', '{module_name}/']:
+            self.assertTrue(exp_file in file_tree)
+        return
+
+    def test_nested_template(self):
+        """Tests creation of nested parse tree."""
+        template_path = TEST_TEMPLATES / 'nested_parent.yml'
+        file_tree = parse_template(template_path)
+        for exp_file in ['setup.py', 'requirements.txt', '{module_name}/']:
+            self.assertTrue(exp_file in file_tree)
+        return
 
 
 class TestFileCreation(TestCase):
     """Tests that all required files are generated correctly."""
-
-    def test_lib_creation(self):
-        """Verifies the base lib directory structure is created."""
-        with tempfile.TemporaryDirectory() as test_dir:
-            test_dir_path = Path(test_dir)
-            project_name = 'lovely_project'
-            carpyt.make_file_structure(project_name, test_dir_path)
-            project = test_dir_path / project_name
-            module = project / project.name
-            docs = project / 'docs'
-            tests = project / 'tests'
-            for directory in [project, module, tests, docs]:
-                self.assertTrue(directory.exists())
-            bin_d = project / 'bin'
-            self.assertFalse(bin_d.exists())
-
-    def test_bin_creation(self):
-        """Verfies the base bin directory structure is created."""
-        with tempfile.TemporaryDirectory() as test_dir:
-            test_dir_path = Path(test_dir)
-            project_name = 'lovely_project'
-            carpyt.make_file_structure(
-                project_name, test_dir_path, bin_project=True)
-            project = test_dir_path / project_name
-            module = project / project_name
-            docs = project / 'docs'
-            tests = project / 'tests'
-            bin_d = project / 'bin'
-            for directory in [project, module, tests, docs, bin_d]:
-                self.assertTrue(directory.exists())
-
-    def test_make_project_dir(self):
-        """Tests the structure of the module dir."""
-        with tempfile.TemporaryDirectory() as test_dir:
-            test_dir_path = Path(test_dir)
-            project_dir = file_structure.make_project_dir(test_dir_path,
-                                                          'lovely_project')
-            with open(str(file_structure.TEMPLATES / 'project.yml'),
-                      'r') as inf:
-                project_template = yaml.load(inf)
-            for file_name in project_template.keys():
-                self.assertTrue((project_dir / file_name).exists())
-
-    def test_make_module_dir(self):
-        """Tests the structure of the module dir."""
-        with tempfile.TemporaryDirectory() as test_dir:
-            test_dir_path = Path(test_dir)
-            module_dir = file_structure.make_module_dir(test_dir_path)
-            self.assertTrue((module_dir / '__init__.py').exists())

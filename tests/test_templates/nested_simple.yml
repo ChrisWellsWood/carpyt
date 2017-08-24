@@ -1,0 +1,3 @@
+!!python/tuple ['dir', '{module}']:
+  !!python/tuple ['dir', 'tests']:
+    !!python/tuple ['file', 'test.py']: null

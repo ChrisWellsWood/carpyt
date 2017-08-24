@@ -1,0 +1,6 @@
+!!python/tuple ['dir', '{module}']:
+  !!python/tuple ['file', '__init__.py']:
+    content: '__version__ = "0.1.0"'
+!!python/tuple ['dir', 'tests']:
+  !!python/tuple ['dir', 'test_files']: null
+!!python/tuple ['dir', 'docs']: null

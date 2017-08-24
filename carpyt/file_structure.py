@@ -9,23 +9,37 @@ import yaml
 TEMPLATES = Path(os.path.abspath(__file__)).parent / 'templates'
 
 
-class Directory:
+class DirectoryPlan:
     """Represents a directory in the filesystem."""
 
     def __init__(self, name, content):
         self.name = name
         self.content = content
 
+    def __getitem__(self, item):
+        return self.content[item]
 
-class File:
+    def __repr__(self):
+        rep_str = "<Directory Plan: name='{}'>".format(self.name)
+        return rep_str
+
+
+class FilePlan:
     """Represents a file in the filesystem."""
 
     def __init__(self, name, content):
         self.name = name
         self.content = content
 
+    def __getitem__(self, item):
+        return self.content[item]
 
-def run_template_parser(root_template: Path) -> Directory:
+    def __repr__(self):
+        rep_str = "<File Plan: name='{}'>".format(self.name)
+        return rep_str
+
+
+def run_template_parser(root_template: Path) -> DirectoryPlan:
     """Parses a file structure template.
 
     Parameters
@@ -35,7 +49,7 @@ def run_template_parser(root_template: Path) -> Directory:
 
     Returns
     -------
-    file_tree : Directory
+    file_tree : DirectoryPlan
         The file structure generated from the templates.
 
     Raises
@@ -45,7 +59,8 @@ def run_template_parser(root_template: Path) -> Directory:
     """
     with open(str(root_template), 'r') as rtf:
         raw_template = yaml.load(rtf)
-    return Directory('top', list(map(parse_template, raw_template.items())))
+    return DirectoryPlan(root_template.stem,
+                         list(map(parse_template, raw_template.items())))
 
 
 def parse_template(template: ((str, str), dict)):
@@ -58,12 +73,14 @@ def parse_template(template: ((str, str), dict)):
 
     Returns
     -------
-    file_structure : Directory or File
+    file_structure : DirectoryPlan or FilePlan
         The file structure created by parsing the template.
     """
-    print(template)
-    (entry_type, name), contents = template
+    (entry_type, name), content = template
     if entry_type == 'file':
-        return File(name, contents)
+        return FilePlan(name, content)
     elif entry_type == 'dir':
-        return Directory(name, list(map(parse_template, contents.items())))
+        if content is None:
+            return DirectoryPlan(name, content)
+        else:
+            return DirectoryPlan(name, list(map(parse_template, content.items())))

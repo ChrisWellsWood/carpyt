@@ -39,7 +39,7 @@ class FilePlan:
         return rep_str
 
 
-def run_template_parser(root_template: Path) -> DirectoryPlan:
+def run_template_parser(root_template: Path, name=None) -> DirectoryPlan:
     """Parses a file structure template.
 
     Parameters
@@ -49,7 +49,7 @@ def run_template_parser(root_template: Path) -> DirectoryPlan:
 
     Returns
     -------
-    file_tree : DirectoryPlan
+    parse_tree : DirectoryPlan
         The file structure generated from the templates.
 
     Raises
@@ -59,8 +59,9 @@ def run_template_parser(root_template: Path) -> DirectoryPlan:
     """
     with open(str(root_template), 'r') as rtf:
         raw_template = yaml.load(rtf)
-    return DirectoryPlan(root_template.stem,
-                         list(map(parse_template, raw_template.items())))
+    parse_tree = list(map(parse_template, sorted(raw_template.items())))
+    return DirectoryPlan(name if name is not None else root_template.stem,
+                         parse_tree)
 
 
 def parse_template(template: ((str, str), dict)):
@@ -75,12 +76,24 @@ def parse_template(template: ((str, str), dict)):
     -------
     file_structure : DirectoryPlan or FilePlan
         The file structure created by parsing the template.
+
+    Raises
+    ------
+    ValueError
+        Raised if an unknown directive is raised.
     """
-    (entry_type, name), content = template
-    if entry_type == 'file':
+    print(template)
+    (directive, name), content = template
+    if directive == 'file':
         return FilePlan(name, content)
-    elif entry_type == 'dir':
+    elif directive == 'link':
+        external_template = Path(content['path'])
+        return run_template_parser(external_template, name)
+    elif directive == 'dir':
         if content is None:
             return DirectoryPlan(name, content)
         else:
-            return DirectoryPlan(name, list(map(parse_template, content.items())))
+            return DirectoryPlan(
+                name, list(map(parse_template, sorted(content.items()))))
+    else:
+        raise ValueError('Unknown directive. Options: dir, external, file')

@@ -28,13 +28,26 @@ class TestTemplateParsing(TestCase):
         template_path = TEST_TEMPLATES / 'nested_branched.yml'
         file_tree = carpyt.run_template_parser(template_path)
         self.assertTrue(file_tree.name == 'nested_branched')
-        self.assertTrue(file_tree[0].name == '{module}')
-        self.assertTrue(file_tree[0][0].name == '__init__.py')
-        self.assertTrue('content' in file_tree[0][0].content)
+        self.assertTrue(file_tree[0].name == 'docs')
         self.assertTrue(file_tree[1].name == 'tests')
         self.assertTrue(file_tree[1][0].name == 'test_files')
         self.assertTrue(file_tree[1][0].content is None)
-        self.assertTrue(file_tree[2].name == 'docs')
+        self.assertTrue(file_tree[2].name == '{module}')
+        self.assertTrue(file_tree[2][0].name == '__init__.py')
+        self.assertTrue('content' in file_tree[2][0].content)
+
+    def test_linked_template(self):
+        """Tests creation of parse tree with linked templates."""
+        template_path = TEST_TEMPLATES / 'parent.yml'
+        file_tree = carpyt.run_template_parser(template_path)
+        self.assertTrue(file_tree.name == 'parent')
+        self.assertTrue(file_tree[0].name == '{module}')
+        self.assertTrue(file_tree[0][0].name == 'child')
+        self.assertTrue(file_tree[0][0][0].name == 'test_files')
+        self.assertTrue(file_tree[0][0][0][0].name == 'tests.py')
+        self.assertTrue(file_tree[0][0][0][0].content is None)
+        self.assertTrue(file_tree[1].name == 'setup.py')
+        self.assertTrue(file_tree[1].content is None)
 
 
 class TestFileCreation(TestCase):

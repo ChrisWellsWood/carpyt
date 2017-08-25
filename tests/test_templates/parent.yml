@@ -1,4 +1,4 @@
 !!python/tuple ['dir', '{module}']:
-  !!python/tuple ['dir', 'tests']:
-    !!python/tuple ['file', 'setup.py']:
-      content: null
+  !!python/tuple ['link', null]:
+    path: 'tests/test_templates/child.yml'
+!!python/tuple ['file', 'setup.py']: null

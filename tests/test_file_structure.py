@@ -49,6 +49,18 @@ class TestTemplateParsing(TestCase):
         self.assertTrue(file_tree[1].name == 'setup.py')
         self.assertTrue(file_tree[1].content is None)
 
+    def test_recursive_template(self):
+        """Tests error handling in recursive linked templates."""
+        template_path = TEST_TEMPLATES / 'recursive.yml'
+        with self.assertRaises(RecursionError):
+            carpyt.run_template_parser(template_path)
+
+    def test_reuse_template(self):
+        """Tests reuse of linked templates."""
+        template_path = TEST_TEMPLATES / 'reuse.yml'
+        file_tree = carpyt.run_template_parser(template_path)
+        self.assertTrue(len(file_tree.content) == 1)
+
 
 class TestFileCreation(TestCase):
     """Tests that all required files are generated correctly."""

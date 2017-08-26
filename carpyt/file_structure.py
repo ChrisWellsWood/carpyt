@@ -23,6 +23,15 @@ class DirectoryPlan:
         rep_str = "<Directory Plan: name='{}'>".format(self.name)
         return rep_str
 
+    def make(self, host_dir, recursive=True):
+        """Makes the directory."""
+        dir_path = host_dir / self.name
+        dir_path.mkdir()
+        if recursive:
+            for template_item in self.content:
+                template_item.make(dir_path)
+        return
+
 
 class FilePlan:
     """Represents a file in the filesystem."""
@@ -37,6 +46,12 @@ class FilePlan:
     def __repr__(self):
         rep_str = "<File Plan: name='{}'>".format(self.name)
         return rep_str
+
+    def make(self, host_dir):
+        """Makes the file."""
+        file_path = host_dir / self.name
+        file_path.touch()
+        return
 
 
 def run_template_parser(root_template, template_name=None, directory_stack=None,
@@ -109,18 +124,18 @@ def parse_item(template, directory_stack=None, parsed_templates=None):
         Raised if an unknown directive is raised.
     """
     (directive, name), content = template
-    if directive == 'file':
-        return FilePlan(name, content)
-    elif directive == 'link':
+    if directive == 'link':
         external_template = Path(content['path'])
         template_name = name if name else external_template.stem
         return run_template_parser(
             external_template, template_name, directory_stack, parsed_templates)
+    if directory_stack:
+        directory_stack.append(name)
+    else:
+        directory_stack = [name]
+    if directive == 'file':
+        return FilePlan(name, content)
     elif directive == 'dir':
-        if directory_stack:
-            directory_stack.append(name)
-        else:
-            directory_stack = [name]
         if content is None:
             return DirectoryPlan(name, content)
         else:

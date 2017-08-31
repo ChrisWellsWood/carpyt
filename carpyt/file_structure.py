@@ -27,7 +27,7 @@ class DirectoryPlan:
         """Makes the directory."""
         dir_path = host_dir / self.name
         dir_path.mkdir()
-        if recursive:
+        if recursive and (self.content is not None):
             for template_item in self.content:
                 template_item.make(dir_path)
         return

@@ -1,0 +1,9 @@
+!!python/tuple ['dir', '{module}']:
+    !!python/tuple ['file', '__init__.py'] : null
+    !!python/tuple ['file', 'lib.py'] : null
+!!python/tuple ['dir', 'tests']:
+    !!python/tuple ['file', 'test_lib.py']: null
+!!python/tuple ['dir', 'docs']:
+!!python/tuple ['file', 'README.md']: null
+!!python/tuple ['file', 'MANIFEST.in']: null
+!!python/tuple ['file', 'setup.py']: null

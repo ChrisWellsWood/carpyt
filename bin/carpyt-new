@@ -14,7 +14,8 @@ def main(args):
         path = carpyt.TEMPLATES / 'python_module.yml'
     else:
         path = pathlib.Path(args.template_path)
-    tree = carpyt.run_template_parser(path, template_name=args.name)
+    tree = carpyt.run_template_parser(path, template_name=args.module_name,
+                                      labels={'{module}':args.module_name})
     tree.make(pathlib.Path('.').resolve())
     return
 
@@ -22,7 +23,7 @@ def main(args):
 if __name__ == '__main__':
     description = 'Carpyt - A tool for generating file structures.'
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('name', type=str, help='Name of new module',
+    parser.add_argument('module_name', type=str, help='Name of new module',
                         action='store')
     parser.add_argument('-t', '--template', type=str,
                         help='Path to template file.', action='store',

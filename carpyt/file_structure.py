@@ -12,8 +12,13 @@ TEMPLATES = Path(os.path.abspath(__file__)).parent / 'templates'
 class DirectoryPlan:
     """Represents a directory in the filesystem."""
 
-    def __init__(self, name, content):
-        self.name = name
+    def __init__(self, name, content, labels=None):
+        if labels:
+            self.name = name.format(**{
+                k[1:-1]:v
+                for k, v in labels.items()})
+        else:
+            self.name = name
         self.content = content
 
     def __getitem__(self, item):
@@ -36,8 +41,13 @@ class DirectoryPlan:
 class FilePlan:
     """Represents a file in the filesystem."""
 
-    def __init__(self, name, content):
-        self.name = name
+    def __init__(self, name, content, labels=None):
+        if labels:
+            self.name = name.format(**{
+                k[1:-1]:v
+                for k, v in labels.items()})
+        else:
+            self.name = name
         self.content = content
 
     def __getitem__(self, item):
@@ -55,7 +65,7 @@ class FilePlan:
 
 
 def run_template_parser(root_template, template_name=None, directory_stack=None,
-                        parsed_templates=None):
+                        parsed_templates=None, labels=None):
     """Parses a file structure template.
 
     Parameters
@@ -99,11 +109,13 @@ def run_template_parser(root_template, template_name=None, directory_stack=None,
     parse_tree = []
     for template_item in sorted(raw_template.items()):
         parse_tree.append(
-            parse_item(template_item, directory_stack, parsed_templates))
-    return DirectoryPlan(name, parse_tree)
+            parse_item(template_item, directory_stack, parsed_templates,
+                       labels=labels))
+    return DirectoryPlan(name, parse_tree, labels=labels)
 
 
-def parse_item(template, directory_stack=None, parsed_templates=None):
+def parse_item(template, directory_stack=None, parsed_templates=None,
+               labels=None):
     """Parses a template item.
 
     Parameters
@@ -128,22 +140,23 @@ def parse_item(template, directory_stack=None, parsed_templates=None):
         external_template = Path(content['path'])
         template_name = name if name else external_template.stem
         return run_template_parser(
-            external_template, template_name, directory_stack, parsed_templates)
+            external_template, template_name, directory_stack, parsed_templates,
+            labels=labels)
     if directory_stack:
         directory_stack.append(name)
     else:
         directory_stack = [name]
     if directive == 'file':
-        return FilePlan(name, content)
+        return FilePlan(name, content, labels=labels)
     elif directive == 'dir':
         if content is None:
-            return DirectoryPlan(name, content)
+            return DirectoryPlan(name, content, labels=labels)
         else:
             parse_tree = []
             for template_item in sorted(content.items()):
                 parse_tree.append(
                     parse_item(template_item, directory_stack,
-                               parsed_templates))
-            return DirectoryPlan(name, parse_tree)
+                               parsed_templates, labels=labels))
+            return DirectoryPlan(name, parse_tree, labels=labels)
     else:
         raise ValueError('Unknown directive. Options: dir, external, file')

@@ -2,6 +2,7 @@
 
 import os
 from pathlib import Path
+import tempfile
 from unittest import TestCase
 
 import carpyt
@@ -64,3 +65,25 @@ class TestTemplateParsing(TestCase):
 
 class TestFileCreation(TestCase):
     """Tests that all required files are generated correctly."""
+
+    def test_simple_project(self):
+        """Tests the file structure of the standard python template."""
+        with tempfile.TemporaryDirectory() as tempdir:
+            td_path = Path(tempdir)
+            template_path = carpyt.TEMPLATES / 'python_module.yml'
+            file_tree = carpyt.run_template_parser(template_path)
+            file_tree.make(td_path)
+            top_dir = td_path / 'python_module'
+            self.assertTrue(top_dir.exists())
+            lib_dir = top_dir / '{module}'
+            self.assertTrue((lib_dir).exists())
+            self.assertTrue((lib_dir / '__init__.py').exists())
+            self.assertTrue((lib_dir / 'lib.py').exists())
+            tests_dir = top_dir / 'tests'
+            self.assertTrue(tests_dir.exists())
+            self.assertTrue((tests_dir / 'test_lib.py').exists())
+            docs_dir = top_dir / 'docs'
+            self.assertTrue(docs_dir.exists())
+            self.assertTrue((top_dir / 'README.md').exists())
+            self.assertTrue((top_dir / 'MANIFEST.in').exists())
+            self.assertTrue((top_dir / 'setup.py').exists())

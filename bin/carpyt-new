@@ -10,7 +10,10 @@ import carpyt
 
 def main(args):
     """Runs carpyt-new, creating a new module."""
-    path = pathlib.Path(args.template_path)
+    if args.template_path is None:
+        path = carpyt.TEMPLATES / 'python_module.yml'
+    else:
+        path = pathlib.Path(args.template_path)
     tree = carpyt.run_template_parser(path, template_name=args.name)
     tree.make(pathlib.Path('.').resolve())
     return
@@ -23,6 +26,6 @@ if __name__ == '__main__':
                         action='store')
     parser.add_argument('-t', '--template', type=str,
                         help='Path to template file.', action='store',
-                        dest='template_path')
+                        default=None, dest='template_path')
     args = parser.parse_args()
     main(args)

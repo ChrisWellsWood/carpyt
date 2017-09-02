@@ -9,9 +9,8 @@ import yaml
 TEMPLATES = Path(os.path.abspath(__file__)).parent / 'templates'
 
 
-class DirectoryPlan:
-    """Represents a directory in the filesystem."""
-
+class BasePlan:
+    """Base class for the plan objects."""
     def __init__(self, name, content, labels=None):
         if labels:
             self.name = name.format(**{
@@ -24,12 +23,34 @@ class DirectoryPlan:
     def __getitem__(self, item):
         return self.content[item]
 
+
+class DirectoryPlan(BasePlan):
+    """Represents a directory in the filesystem.
+    
+    Parameters
+    ----------
+    name : str
+        Name of the directory.
+    content : [DirectoryPlan or FilePlan]
+        A list of fies of directories in the directory.
+    labels : dict, optional
+        A dictionary of labels that can be used to customise directory
+        names on file structure creation.
+    """
     def __repr__(self):
         rep_str = "<Directory Plan: name='{}'>".format(self.name)
         return rep_str
 
     def make(self, host_dir, recursive=True):
-        """Makes the directory."""
+        """Makes the directory.
+        
+        Parameters
+        ----------
+        host_dir : pathlib.Path
+            Path to the parent directory of this plan.
+        recursive : bool, optional
+            If True, make will be called on all the contents objects.
+        """
         dir_path = host_dir / self.name
         dir_path.mkdir()
         if recursive and (self.content is not None):
@@ -38,27 +59,31 @@ class DirectoryPlan:
         return
 
 
-class FilePlan:
-    """Represents a file in the filesystem."""
-
-    def __init__(self, name, content, labels=None):
-        if labels:
-            self.name = name.format(**{
-                k[1:-1]:v
-                for k, v in labels.items()})
-        else:
-            self.name = name
-        self.content = content
-
-    def __getitem__(self, item):
-        return self.content[item]
-
+class FilePlan(BasePlan):
+    """Represents a file in the filesystem.
+    
+    Parameters
+    ----------
+    name : str
+        Name of the file.
+    content : str
+        The contents of the file, as a string.
+    labels : dict, optional
+        A dictionary of labels that can be used to customise file
+        names on file structure creation.
+    """
     def __repr__(self):
         rep_str = "<File Plan: name='{}'>".format(self.name)
         return rep_str
 
     def make(self, host_dir):
-        """Makes the file."""
+        """Makes the file.
+
+        Parameters
+        ----------
+        host_dir : pathlib.Path
+            Path to the parent directory of this plan.
+        """
         file_path = host_dir / self.name
         file_path.touch()
         return
